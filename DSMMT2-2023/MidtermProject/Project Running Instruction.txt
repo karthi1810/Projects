@@ -1,0 +1,5 @@
+pip install streamlit
+python -m streamlit run app.py
+A new web browser will be opened. Choose the Score prediction option from Menu.
+Complete the questionaire.
+Output score out of 20 will be predicted.
