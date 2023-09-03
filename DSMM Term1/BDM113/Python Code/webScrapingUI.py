@@ -63,7 +63,7 @@ featurelist=featurestr.rstrip(featurestr[-1])
 featureRegx=re.compile(featurelist,re.IGNORECASE)
 
 regx = re.compile(tvname, re.IGNORECASE)
-conn_str = "mongodb+srv://Karthi:Arunith0520@cluster0.iwu5kws.mongodb.net/test"
+conn_str = "mongodb+srv://Karthi:***********@cluster0.iwu5kws.mongodb.net/test"
 try:
 	client = pymongo.MongoClient(conn_str)
 except Exception:
