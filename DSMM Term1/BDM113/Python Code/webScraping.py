@@ -69,7 +69,7 @@ df = df.transpose()
 df.to_json('ProductTelevision.json', orient='records', lines=True)
 
 # Loading JSON Data to MongoDB
-conn_str = "mongodb+srv://Karthi:Arunith0520@cluster0.iwu5kws.mongodb.net/test"
+conn_str = "mongodb+srv://Karthi:*************@cluster0.iwu5kws.mongodb.net/test"
 try:
 	client = pymongo.MongoClient(conn_str)
 except Exception:
