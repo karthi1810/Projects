@@ -1,0 +1,2 @@
+Webscrape the data of the product Television from the website COSTCO.CA .
+Based on the user preference of the features of a product, a list of recommendations will be shown to the customer.
