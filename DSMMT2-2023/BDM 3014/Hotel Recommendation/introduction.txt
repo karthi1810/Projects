@@ -1,0 +1,2 @@
+Based on the data from different hotels, a suitable hotel is recommended for the user.
+User has to provide the feature or similar hotel name.
