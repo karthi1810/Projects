@@ -1,0 +1,246 @@
+HIVE & SQOOP QUERIES
+##################################  Creating and loading data into District Table  ##################################
+
+create external table District(DistrictID string, DistrictName string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/District';
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table District --hive-import --hive-table District --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table District --hive-import --create-hive-table --hive-table District --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table District SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+
+##################################  Creating and loading data into Province Table  ##################################
+
+create external table Province(ProvinceID string, ProvinceName string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/Province_test';
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table Province --hive-import --hive-table Province --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table Province --hive-import --create-hive-table --hive-table Province --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table Province SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+##################################  Creating and loading data into PaymentType Table  ##################################
+
+create external table PaymentType(PaymentTypeID string,PaymentType string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/PaymentType';
+
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table PaymentType --hive-import --hive-table PaymentType --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table PaymentType --hive-import --create-hive-table --hive-table PaymentType --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table PaymentType SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+
+##################################  Creating and loading data into Technician Table  ##################################
+
+create external table Technician(TechnicianID string,TechnicianName string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/Technician';
+
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table Technician --hive-import --hive-table Technician --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table Technician --hive-import --create-hive-table --hive-table Technician --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table Technician SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+##################################  Creating and loading data into Services Table  ##################################
+
+create external table Services(ServiceID string,ServiceName string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/Services';
+
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table Services --hive-import --hive-table Services --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table Services --hive-import --create-hive-table --hive-table Services --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table Services SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+##################################  Creating and loading data into TechRate Table  ##################################
+
+create external table TechRate(TechType int,Rate int)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/TechRate';
+
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table TechRate --hive-import --hive-table TechRate --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table TechRate --hive-import --create-hive-table --hive-table TechRate --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table TechRate SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+##################################  Creating and loading data into WorkOrders Table  ##################################
+
+create external table WorkOrders(WorkOrderID string,DistrictID string,ProvinceID string,ServiceID string,TechnicianID string,PaymentTypeID string,ReqDate Date,WorkDate Date,TechType int,
+LaborWarranty boolean,PartsWarranty boolean,LaborHours float, PartsCost float)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/Project_1043/ExternalTables/WorkOrders';
+
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table WorkOrders --hive-import --hive-table WorkOrders --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+OR
+
+sqoop-import --connect jdbc:mysql://sandbox-hdp.hortonworks.com/Project1043 --username root --P --table WorkOrders --hive-import --create-hive-table --hive-table WorkOrders --hive-database Project1043 -m 1 --fields-terminated-by ','
+
+In Hive:
+Alter table WorkOrders SET TBLPROPERTIES('EXTERNAL'='TRUE')
+
+
+##################################  Creating and calculating data for Master WorkOrders View  ##################################
+
+create view vMasterWorkOrders 
+as 
+with result as (
+select w.workorderid as workorderid, 
+d.districtname as districtname,
+pr.provincename as provincename, 
+t.technicianname as technicianname,
+s.servicename as servicename, 
+w.ReqDate as ReqDate,
+w.workdate as workdate, 
+w.techtype as techtype,
+w.LaborWarranty as LaborWarranty, 
+w.partswarranty as partswarranty,
+w.laborhours as laborhours, 
+w.partscost as partscost,
+p.paymenttype as paymenttype, 
+datediff(w.workdate,w.ReqDate) as wait,
+tr.Rate as LaborRate, 
+(tr.Rate*w.laborhours) as LaborCost,
+if(w.LaborWarranty=true,0,tr.Rate*w.laborhours) as LaborFee,
+if(w.partswarranty=true,0,w.partscost) as PartsFee
+from workorders w 
+join district d 
+on w.districtid = d.districtid
+join province pr on w.provinceid = pr.provinceid
+join technician t 
+on w.technicianid = t.technicianid
+join services s 
+on w.serviceid = s.serviceid
+join paymenttype p 
+on w.paymenttypeid = p.paymenttypeid
+join techrate tr 
+on w.techtype = tr.techtype)
+select result.*, (result.partscost+result.LaborCost) as TotalCost,
+(result.LaborFee+result.PartsFee) as TotalFee
+from result 
+join workorders wo 
+on wo.workorderid = result.workorderid;
+
+
+
+MYSQL TABLE CREATION
+########################
+
+----------------------------------  Creating and loading data into District Table  ----------------------------------
+
+create table District(DistrictID varchar(255), DistrictName varchar(255));
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/District.csv' 
+INTO TABLE District
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'; 
+
+
+
+----------------------------------  Creating and loading data into Province Table  ----------------------------------
+
+create table Province(ProvinceID varchar(255), ProvinceName varchar(255));
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/Province.csv' 
+INTO TABLE Province
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'; 
+
+----------------------------------  Creating and loading data into PaymentType Table  ----------------------------------
+
+create table PaymentType(PaymentTypeID varchar(255),PaymentType varchar(255));
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/PaymentType.csv' 
+INTO TABLE PaymentType
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'; 
+
+----------------------------------  Creating and loading data into Technician Table  ----------------------------------
+
+create table Technician(TechnicianID varchar(255),TechnicianName varchar(255));
+
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/Technician.csv' 
+INTO TABLE Technician
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+----------------------------------  Creating and loading data into Services Table  ----------------------------------
+
+create table Services(ServiceID varchar(255),ServiceName varchar(255));
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/Services.csv' 
+INTO TABLE Services
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+----------------------------------  Creating and loading data into TechRate Table  ----------------------------------
+
+create table TechRate(TechType int(4),Rate int(5));
+
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/TechRate.csv' 
+INTO TABLE TechRate
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+----------------------------------  Creating and loading data into WorkOrders Table  ----------------------------------
+
+create table WorkOrders(WorkOrderID varchar(255),DistrictID varchar(255),ProvinceID varchar(255),ServiceID varchar(255),TechnicianID varchar(255),PaymentTypeID varchar(255),ReqDate Date,WorkDate Date,TechType int(4),
+LaborWarranty boolean,PartsWarranty boolean,LaborHours float(20,2), PartsCost float(20,2));
+
+LOAD DATA LOCAL INFILE '/home/hdfs/Project_1043/WorkOrders.csv' 
+INTO TABLE WorkOrders
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+
+
+
